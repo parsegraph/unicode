@@ -200,7 +200,53 @@ export default class Unicode {
     return givenLetter;
   };
 
+  isArabic(letter:string|number) {
+    if (typeof letter !== 'number') {
+      letter = letter.charCodeAt(0);
+    }
+    const data = this.get(letter);
+    if (!data) {
+      return false;
+    }
+    const cv = data[UNICODE_CODE_VALUE];
+    return cv >= 0x621 && cv <= 0x64a;
+  };
+
+  isMark(letter:string|number) {
+    const cat = this.getGeneralCategory(letter);
+    return cat === 'Mn' || cat === 'Mc' || cat === 'Me';
+  };
+
+  isArabicDiacritic(letter:string|number) {
+    if (typeof letter !== 'number') {
+      letter = letter.charCodeAt(0);
+    }
+    const data = this.get(letter);
+    if (!data) {
+      return false;
+    }
+    const cv = data[UNICODE_CODE_VALUE];
+    return cv >= 0x621 && cv <= 0x64a;
+  };
+
+  completeLoading() {
+    if (this.loaded()) {
+      return;
+    }
+    // console.log("Time till unicode parsed: " + elapsed(START_TIME));
+    this._loaded = true;
+    if (this.onLoad) {
+      this.onLoad();
+    }
+    if (this._onLoad) {
+      this._onLoad.call(this._onLoadThisArg || this);
+    }
+  }
+
   loadLocally() {
+    if (this.loaded()) {
+      return;
+    }
     this.loadFromString(require("./UnicodeDataFilteredWithoutLoL.csv").default, [
       UNICODE_CODE_VALUE,
       UNICODE_GENERAL_CATEGORY,
@@ -209,6 +255,9 @@ export default class Unicode {
   }
 
   loadFromString(t:string, filteredFields?:number[]) {
+    if (this.loaded()) {
+      return;
+    }
     if (!filteredFields) {
       filteredFields = ALL_FIELDS;
     }
@@ -254,39 +303,11 @@ export default class Unicode {
       }
     }
     // console.log("Text received: " + t.length + " bytes, " + lines + " lines");
-  };
-
-  isArabic(letter:string|number) {
-    if (typeof letter !== 'number') {
-      letter = letter.charCodeAt(0);
-    }
-    const data = this.get(letter);
-    if (!data) {
-      return false;
-    }
-    const cv = data[UNICODE_CODE_VALUE];
-    return cv >= 0x621 && cv <= 0x64a;
-  };
-
-  isMark(letter:string|number) {
-    const cat = this.getGeneralCategory(letter);
-    return cat === 'Mn' || cat === 'Mc' || cat === 'Me';
-  };
-
-  isArabicDiacritic(letter:string|number) {
-    if (typeof letter !== 'number') {
-      letter = letter.charCodeAt(0);
-    }
-    const data = this.get(letter);
-    if (!data) {
-      return false;
-    }
-    const cv = data[UNICODE_CODE_VALUE];
-    return cv >= 0x621 && cv <= 0x64a;
+    this.completeLoading();
   };
 
   load(dbURL:string, storage?:any) {
-    if (this._loaded) {
+    if (this.loaded()) {
       return;
     }
     // console.log(new Error("LOADING UNICODE"));
@@ -295,17 +316,6 @@ export default class Unicode {
     }
     const storageKey = 'UNICODE@' + dbURL;
     const that = this;
-    const complete = function() {
-      // console.log("Time till unicode parsed: " +
-      // elapsed(START_TIME));
-      that._loaded = true;
-      if (that.onLoad) {
-        that.onLoad();
-      }
-      if (that._onLoad) {
-        that._onLoad.call(that._onLoadThisArg || that);
-      }
-    };
     if (storage) {
       let unicode = storage.getItem(storageKey);
       if (unicode) {
@@ -314,7 +324,7 @@ export default class Unicode {
           this.unicodeProperties = unicode.unicodeProperties;
           this.unicodeBidiCounts = unicode.unicodeBidiCounts;
           this.unicodeCategoryCounts = unicode.unicodeCategorycounts;
-          complete.call(this);
+          this.completeLoading();
           return;
         } catch (ex) {
           console.log('Failed to read stored Unicode data');
@@ -325,12 +335,11 @@ export default class Unicode {
     }
     const xhr = new XMLHttpRequest();
     xhr.open('GET', dbURL);
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = ()=>{
       if (xhr.readyState == 4 && xhr.status == 200) {
         // console.log("Time till unicode received: " +
         // elapsed(START_TIME));
         that.loadFromString(xhr.responseText);
-        complete.call(that);
         if (storage) {
           const unicodeData = {
             unicodeCategoryCounts: that.unicodeCategoryCounts,

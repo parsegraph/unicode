@@ -1,6 +1,6 @@
 {
   "name": "parsegraph-unicode",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "description": "unicode",
   "main": "dist/unicode.js",
   "types": "dist/unicode.d.ts",
