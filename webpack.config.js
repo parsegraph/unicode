@@ -21,6 +21,10 @@ module.exports = {
         exclude: /node_modules/,
         use: ["ts-shader-loader"],
       },
+      {
+        test: /\.(csv|txt)$/i,
+        use: 'raw-loader',
+      },
     ],
   },
   resolve: {
