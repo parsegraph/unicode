@@ -55,37 +55,37 @@ export function getGlyphDirections():{[id:string]:string} {
 
 let i = 0;
 export const UNICODE_CODE_VALUE = i++;
-export const UNICODE_characterName = i++;
+export const UNICODE_CHARACTER_NAME = i++;
 export const UNICODE_GENERAL_CATEGORY = i++;
-export const UNICODE_canonicalCombiningClasses = i++;
+export const UNICODE_CANONICAL_COMBINING_CLASSES = i++;
 export const UNICODE_BIDIRECTIONAL_CATEGORY = i++;
-export const UNICODE_decompositionMapping = i++;
-export const UNICODE_decimalDigitValue = i++;
-export const UNICODE_digitValue = i++;
-export const UNICODE_numericValue = i++;
-export const UNICODE_mirrored = i++;
-export const UNICODE_unicode10Name = i++;
-export const UNICODE_commentField = i++;
-export const UNICODE_uppercaseMapping = i++;
-export const UNICODE_lowercaseMapping = i++;
-export const UNICODE_titlecaseMapping = i++;
+export const UNICODE_DECOMPOSITION_MAPPING = i++;
+export const UNICODE_DECIMAL_DIGIT_VALUE = i++;
+export const UNICODE_DIGIT_VALUE = i++;
+export const UNICODE_NUMERIC_VALUE = i++;
+export const UNICODE_MIRRORED = i++;
+export const UNICODE_UNICODE_10_NAME = i++;
+export const UNICODE_COMMENT_FIELD = i++;
+export const UNICODE_UPPERCASE_MAPPING = i++;
+export const UNICODE_LOWERCASE_MAPPING = i++;
+export const UNICODE_TITLECASE_MAPPING = i++;
 
 const ALL_FIELDS = [
   UNICODE_CODE_VALUE,
-  UNICODE_characterName,
+  UNICODE_CHARACTER_NAME,
   UNICODE_GENERAL_CATEGORY,
-  UNICODE_canonicalCombiningClasses,
+  UNICODE_CANONICAL_COMBINING_CLASSES,
   UNICODE_BIDIRECTIONAL_CATEGORY,
-  UNICODE_decompositionMapping,
-  UNICODE_decimalDigitValue,
-  UNICODE_digitValue,
-  UNICODE_numericValue,
-  UNICODE_mirrored,
-  UNICODE_unicode10Name,
-  UNICODE_commentField,
-  UNICODE_uppercaseMapping,
-  UNICODE_lowercaseMapping,
-  UNICODE_titlecaseMapping,
+  UNICODE_DECOMPOSITION_MAPPING,
+  UNICODE_DECIMAL_DIGIT_VALUE,
+  UNICODE_DIGIT_VALUE,
+  UNICODE_NUMERIC_VALUE,
+  UNICODE_MIRRORED,
+  UNICODE_UNICODE_10_NAME,
+  UNICODE_COMMENT_FIELD,
+  UNICODE_UPPERCASE_MAPPING,
+  UNICODE_LOWERCASE_MAPPING,
+  UNICODE_TITLECASE_MAPPING
 ]
 
 export default class Unicode {
@@ -227,11 +227,11 @@ export default class Unicode {
         const charNamedData:any[] = [];
         charData.forEach((fieldValue, fieldIndex)=>{
           const unicodeField = filteredFields[fieldIndex];
-          if (unicodeField === UNICODE_CODE_VALUE || unicodeField >= UNICODE_uppercaseMapping) {
+          if (unicodeField === UNICODE_CODE_VALUE || unicodeField >= UNICODE_UPPERCASE_MAPPING) {
             charNamedData[unicodeField] = parseInt(fieldValue, 16);
-          } else if(unicodeField === UNICODE_decimalDigitValue) {
+          } else if(unicodeField === UNICODE_DECIMAL_DIGIT_VALUE) {
             charNamedData[unicodeField] = parseInt(fieldValue);
-          } else if(unicodeField === UNICODE_digitValue) {
+          } else if(unicodeField === UNICODE_DIGIT_VALUE) {
             charNamedData[unicodeField] = parseFloat(fieldValue);
           } else {
             charNamedData[unicodeField] = fieldValue;
