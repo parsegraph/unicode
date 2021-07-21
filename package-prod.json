@@ -1,0 +1,17 @@
+{
+    "name": "parsegraph-unicode",
+    "version": "1.5.6",
+    "description": "unicode",
+    "main": "dist/parsegraph-unicode.js",
+    "types": "dist/parsegraph-unicode.d.ts",
+    "repository": {
+      "type": "git",
+      "url": "git+ssh://git@github.com/parsegraph/unicode.git"
+    },
+    "author": "Rainback, Inc.",
+    "license": "MIT",
+    "bugs": {
+      "url": "https://github.com/parsegraph/unicode/issues"
+    },
+    "homepage": "https://github.com/parsegraph/unicode#readme"
+  }
