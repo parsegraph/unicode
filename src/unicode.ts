@@ -32,8 +32,11 @@ export const unicodeCursiveMap:{[id:number]:number[]} = {
   0x64a: [0xfef1, 0xfef3, 0xfef4, 0xfef2], // YEH,
 };
 
-let directions:{[id:string]:string} = null;
-export function getGlyphDirections():{[id:string]:string} {
+export type GlyphDirection = "L" | "R" | "WS"
+type Directions = {[id:string]:GlyphDirection};
+
+let directions:Directions = null;
+export function getGlyphDirections():Directions {
   if(directions) {
     return directions;
   }
@@ -48,7 +51,7 @@ export function getGlyphDirections():{[id:string]:string} {
   });
   'PDF CS ON WS BN S NSM B'.split(' ').forEach((cat)=>{
     // Neutral characters
-    directions[cat] = null;
+    directions[cat] = 'WS';
   });
   return directions;
 }
@@ -136,8 +139,8 @@ export default class Unicode {
     return unicodeCursiveMap[t];
   };
 
-  getGlyphDirection(text:string|number) {
-    const directions:{[id:string]:string} = getGlyphDirections();
+  getGlyphDirection(text:string|number):GlyphDirection {
+    const directions:Directions = getGlyphDirections();
     const dir = directions[this.getBidirectionalCategory(text)];
     if (dir === undefined) {
       throw new Error(
