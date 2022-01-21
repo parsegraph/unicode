@@ -1,6 +1,6 @@
 // SemanticCodeValue:[Isolated, Initial, Medial, Final].
 // Use null for non-applicable.
-export const unicodeCursiveMap:{[id:number]:number[]} = {
+export const unicodeCursiveMap: { [id: number]: number[] } = {
   0x627: [0xfe8d, null, null, 0xfe8e], // ALEF
   0x628: [0xfe8f, 0xfe91, 0xfe92, 0xfe90], // BEH
   0x629: [0xfe93, null, null, 0xfe94], // MARBUTA
@@ -32,26 +32,26 @@ export const unicodeCursiveMap:{[id:number]:number[]} = {
   0x64a: [0xfef1, 0xfef3, 0xfef4, 0xfef2], // YEH,
 };
 
-export type GlyphDirection = "L" | "R" | "WS"
-type Directions = {[id:string]:GlyphDirection};
+export type GlyphDirection = "L" | "R" | "WS";
+type Directions = { [id: string]: GlyphDirection };
 
-let directions:Directions = null;
-export function getGlyphDirections():Directions {
-  if(directions) {
+let directions: Directions = null;
+export function getGlyphDirections(): Directions {
+  if (directions) {
     return directions;
   }
   directions = {};
-  'L LRE LRO EN ES ET'.split(' ').forEach((cat)=>{
+  "L LRE LRO EN ES ET".split(" ").forEach((cat) => {
     // Left-to-right.
-    directions[cat] = 'L';
+    directions[cat] = "L";
   });
-  'R AL AN RLE RLO'.split(' ').forEach((cat)=>{
+  "R AL AN RLE RLO".split(" ").forEach((cat) => {
     // Right-to-left
-    directions[cat] = 'R';
+    directions[cat] = "R";
   });
-  'PDF CS ON WS BN S NSM B'.split(' ').forEach((cat)=>{
+  "PDF CS ON WS BN S NSM B".split(" ").forEach((cat) => {
     // Neutral characters
-    directions[cat] = 'WS';
+    directions[cat] = "WS";
   });
   return directions;
 }
@@ -88,17 +88,17 @@ const ALL_FIELDS = [
   UNICODE_COMMENT_FIELD,
   UNICODE_UPPERCASE_MAPPING,
   UNICODE_LOWERCASE_MAPPING,
-  UNICODE_TITLECASE_MAPPING
-]
+  UNICODE_TITLECASE_MAPPING,
+];
 
 export default class Unicode {
-  unicodeProperties:any;
-  unicodeBidiCounts:any;
-  unicodeCategoryCounts:any;
-  _loaded:boolean;
-  onLoad:Function;
-  _onLoad:Function;
-  _onLoadThisArg:object;
+  unicodeProperties: any;
+  unicodeBidiCounts: any;
+  unicodeCategoryCounts: any;
+  _loaded: boolean;
+  onLoad: Function;
+  _onLoad: Function;
+  _onLoadThisArg: object;
 
   constructor() {
     this.unicodeProperties = {};
@@ -106,8 +106,8 @@ export default class Unicode {
     this.unicodeCategoryCounts = {};
   }
 
-  getGeneralCategory(letter:string|number):string {
-    if (typeof letter !== 'number') {
+  getGeneralCategory(letter: string | number): string {
+    if (typeof letter !== "number") {
       letter = letter.charCodeAt(0);
     }
     const data = this.get(letter);
@@ -117,7 +117,7 @@ export default class Unicode {
     return data[UNICODE_GENERAL_CATEGORY];
   }
 
-  getBidirectionalCategory(codeOrLetter:string|number) {
+  getBidirectionalCategory(codeOrLetter: string | number) {
     const data = this.get(codeOrLetter);
     if (!data) {
       return "L";
@@ -125,36 +125,36 @@ export default class Unicode {
     return data[UNICODE_BIDIRECTIONAL_CATEGORY];
   }
 
-  get(codeOrLetter:string|number) {
-    if (typeof codeOrLetter === 'number') {
+  get(codeOrLetter: string | number) {
+    if (typeof codeOrLetter === "number") {
       return this.unicodeProperties[codeOrLetter];
     }
     return this.unicodeProperties[codeOrLetter.charCodeAt(0)];
-  };
+  }
 
-  getCursiveMapping(t:any) {
-    if (typeof t !== 'number') {
+  getCursiveMapping(t: any) {
+    if (typeof t !== "number") {
       t = t.charCodeAt(0);
     }
     return unicodeCursiveMap[t];
-  };
+  }
 
-  getGlyphDirection(text:string|number):GlyphDirection {
-    const directions:Directions = getGlyphDirections();
+  getGlyphDirection(text: string | number): GlyphDirection {
+    const directions: Directions = getGlyphDirections();
     const dir = directions[this.getBidirectionalCategory(text)];
     if (dir === undefined) {
       throw new Error(
-          'Unrecognized character: \\u' +
-        text.toString().charCodeAt(0).toString(16),
+        "Unrecognized character: \\u" +
+          text.toString().charCodeAt(0).toString(16)
       );
     }
     return dir;
-  };
+  }
 
   cursive(
-      givenLetter:string|number,
-      prevLetter:string|number,
-      nextLetter:string|number,
+    givenLetter: string | number,
+    prevLetter: string | number,
+    nextLetter: string | number
   ) {
     const cursiveMapping = this.getCursiveMapping(givenLetter);
     if (!cursiveMapping) {
@@ -201,10 +201,10 @@ export default class Unicode {
     }
 
     return givenLetter;
-  };
+  }
 
-  isArabic(letter:string|number) {
-    if (typeof letter !== 'number') {
+  isArabic(letter: string | number) {
+    if (typeof letter !== "number") {
       letter = letter.charCodeAt(0);
     }
     const data = this.get(letter);
@@ -213,15 +213,15 @@ export default class Unicode {
     }
     const cv = data[UNICODE_CODE_VALUE];
     return cv >= 0x621 && cv <= 0x64a;
-  };
+  }
 
-  isMark(letter:string|number) {
+  isMark(letter: string | number) {
     const cat = this.getGeneralCategory(letter);
-    return cat === 'Mn' || cat === 'Mc' || cat === 'Me';
-  };
+    return cat === "Mn" || cat === "Mc" || cat === "Me";
+  }
 
-  isArabicDiacritic(letter:string|number) {
-    if (typeof letter !== 'number') {
+  isArabicDiacritic(letter: string | number) {
+    if (typeof letter !== "number") {
       letter = letter.charCodeAt(0);
     }
     const data = this.get(letter);
@@ -230,7 +230,7 @@ export default class Unicode {
     }
     const cv = data[UNICODE_CODE_VALUE];
     return cv >= 0x621 && cv <= 0x64a;
-  };
+  }
 
   completeLoading() {
     if (this.loaded()) {
@@ -250,14 +250,17 @@ export default class Unicode {
     if (this.loaded()) {
       return;
     }
-    this.loadFromString(require("./UnicodeDataFilteredWithoutLoL.csv").default, [
-      UNICODE_CODE_VALUE,
-      UNICODE_GENERAL_CATEGORY,
-      UNICODE_BIDIRECTIONAL_CATEGORY
-    ]);
+    this.loadFromString(
+      require("./UnicodeDataFilteredWithoutLoL.csv").default,
+      [
+        UNICODE_CODE_VALUE,
+        UNICODE_GENERAL_CATEGORY,
+        UNICODE_BIDIRECTIONAL_CATEGORY,
+      ]
+    );
   }
 
-  loadFromString(t:string, filteredFields?:number[]) {
+  loadFromString(t: string, filteredFields?: number[]) {
     if (this.loaded()) {
       return;
     }
@@ -269,37 +272,56 @@ export default class Unicode {
     const ws = /[\n\r]/;
     for (let i = 0; i < t.length; ++i) {
       if (ws.test(t[i])) {
-        const charData = t.substring(start, i).split(';');
+        const charData = t.substring(start, i).split(";");
         if (lines < 100) {
           // console.log(charData);
         }
         start = i + 1;
         ++lines;
 
-        const charNamedData:any[] = [];
-        charData.forEach((fieldValue, fieldIndex)=>{
+        const charNamedData: any[] = [];
+        charData.forEach((fieldValue, fieldIndex) => {
           const unicodeField = filteredFields[fieldIndex];
-          if (unicodeField === UNICODE_CODE_VALUE || unicodeField >= UNICODE_UPPERCASE_MAPPING) {
+          if (
+            unicodeField === UNICODE_CODE_VALUE ||
+            unicodeField >= UNICODE_UPPERCASE_MAPPING
+          ) {
             charNamedData[unicodeField] = parseInt(fieldValue, 16);
-          } else if(unicodeField === UNICODE_DECIMAL_DIGIT_VALUE) {
+          } else if (unicodeField === UNICODE_DECIMAL_DIGIT_VALUE) {
             charNamedData[unicodeField] = parseInt(fieldValue);
-          } else if(unicodeField === UNICODE_DIGIT_VALUE) {
+          } else if (unicodeField === UNICODE_DIGIT_VALUE) {
             charNamedData[unicodeField] = parseFloat(fieldValue);
           } else {
             charNamedData[unicodeField] = fieldValue;
           }
         });
-        this.unicodeProperties[charNamedData[UNICODE_CODE_VALUE]] = charNamedData;
+        this.unicodeProperties[
+          charNamedData[UNICODE_CODE_VALUE]
+        ] = charNamedData;
 
-        if (!(charNamedData[UNICODE_BIDIRECTIONAL_CATEGORY] in this.unicodeBidiCounts)) {
+        if (
+          !(
+            charNamedData[UNICODE_BIDIRECTIONAL_CATEGORY] in
+            this.unicodeBidiCounts
+          )
+        ) {
           this.unicodeBidiCounts[
-              charNamedData[UNICODE_BIDIRECTIONAL_CATEGORY]
+            charNamedData[UNICODE_BIDIRECTIONAL_CATEGORY]
           ] = 1;
         } else {
-          ++this.unicodeBidiCounts[charNamedData[UNICODE_BIDIRECTIONAL_CATEGORY]];
+          ++this.unicodeBidiCounts[
+            charNamedData[UNICODE_BIDIRECTIONAL_CATEGORY]
+          ];
         }
-        if (!(charNamedData[UNICODE_GENERAL_CATEGORY] in this.unicodeCategoryCounts)) {
-          this.unicodeCategoryCounts[charNamedData[UNICODE_GENERAL_CATEGORY]] = 1;
+        if (
+          !(
+            charNamedData[UNICODE_GENERAL_CATEGORY] in
+            this.unicodeCategoryCounts
+          )
+        ) {
+          this.unicodeCategoryCounts[
+            charNamedData[UNICODE_GENERAL_CATEGORY]
+          ] = 1;
         } else {
           ++this.unicodeCategoryCounts[charNamedData[UNICODE_GENERAL_CATEGORY]];
         }
@@ -307,17 +329,17 @@ export default class Unicode {
     }
     // console.log("Text received: " + t.length + " bytes, " + lines + " lines");
     this.completeLoading();
-  };
+  }
 
-  load(dbURL:string, storage?:any) {
+  load(dbURL: string, storage?: any) {
     if (this.loaded()) {
       return;
     }
     // console.log(new Error("LOADING UNICODE"));
     if (!dbURL) {
-      dbURL = '/UnicodeData.txt';
+      dbURL = "/UnicodeData.txt";
     }
-    const storageKey = 'UNICODE@' + dbURL;
+    const storageKey = "UNICODE@" + dbURL;
     const that = this;
     if (storage) {
       let unicode = storage.getItem(storageKey);
@@ -330,15 +352,15 @@ export default class Unicode {
           this.completeLoading();
           return;
         } catch (ex) {
-          console.log('Failed to read stored Unicode data');
+          console.log("Failed to read stored Unicode data");
           console.log(ex);
           storage.removeItem(storageKey);
         }
       }
     }
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', dbURL);
-    xhr.onreadystatechange = ()=>{
+    xhr.open("GET", dbURL);
+    xhr.onreadystatechange = () => {
       if (xhr.readyState == 4 && xhr.status == 200) {
         // console.log("Time till unicode received: " +
         // elapsed(START_TIME));
@@ -362,22 +384,22 @@ export default class Unicode {
       }
     };
     xhr.send();
-  };
+  }
 
   loaded() {
     return this._loaded;
-  };
+  }
 
-  setOnLoad(onLoad:Function, onLoadThisArg?:object) {
+  setOnLoad(onLoad: Function, onLoadThisArg?: object) {
     if (this._loaded) {
-      throw new Error('Unicode character database is already loaded');
+      throw new Error("Unicode character database is already loaded");
     }
     this._onLoad = onLoad;
     this._onLoadThisArg = onLoadThisArg;
-  };
+  }
 }
 
-let UNICODE_INSTANCE:Unicode = null;
+let UNICODE_INSTANCE: Unicode = null;
 export function defaultUnicode() {
   if (!UNICODE_INSTANCE) {
     UNICODE_INSTANCE = new Unicode();
@@ -386,7 +408,6 @@ export function defaultUnicode() {
   return UNICODE_INSTANCE;
 }
 
-export function setDefaultUnicode(unicode:Unicode) {
+export function setDefaultUnicode(unicode: Unicode) {
   UNICODE_INSTANCE = unicode;
 }
-
