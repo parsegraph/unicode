@@ -6,7 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
   root.style.position = "relative";
 
   const container = document.createElement("div");
-  container.innerHTML = JSON.stringify(unicode.get("T"));
+  const glyph = "T";
+  container.innerHTML = glyph + "=" + JSON.stringify(unicode.get(glyph));
   container.style.position = "absolute";
   container.style.left = "0px";
   container.style.top = "0px";
