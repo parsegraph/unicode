@@ -1,5 +1,5 @@
 var assert = require("assert");
-import { defaultUnicode } from "..";
+import { defaultUnicode } from "../src/index";
 
 describe("Package", function () {
   it("works", () => {
