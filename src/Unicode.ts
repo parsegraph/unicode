@@ -1,6 +1,6 @@
 // SemanticCodeValue:[Isolated, Initial, Medial, Final].
 // Use null for non-applicable.
-export const unicodeCursiveMap: { [id: number]: number[] } = {
+const unicodeCursiveMap: { [id: number]: number[] } = {
   0x627: [0xfe8d, null, null, 0xfe8e], // ALEF
   0x628: [0xfe8f, 0xfe91, 0xfe92, 0xfe90], // BEH
   0x629: [0xfe93, null, null, 0xfe94], // MARBUTA
@@ -295,9 +295,8 @@ export default class Unicode {
             charNamedData[unicodeField] = fieldValue;
           }
         });
-        this.unicodeProperties[
-          charNamedData[UNICODE_CODE_VALUE]
-        ] = charNamedData;
+        this.unicodeProperties[charNamedData[UNICODE_CODE_VALUE]] =
+          charNamedData;
 
         if (
           !(
@@ -397,17 +396,4 @@ export default class Unicode {
     this._onLoad = onLoad;
     this._onLoadThisArg = onLoadThisArg;
   }
-}
-
-let UNICODE_INSTANCE: Unicode = null;
-export function defaultUnicode() {
-  if (!UNICODE_INSTANCE) {
-    UNICODE_INSTANCE = new Unicode();
-    UNICODE_INSTANCE.loadLocally();
-  }
-  return UNICODE_INSTANCE;
-}
-
-export function setDefaultUnicode(unicode: Unicode) {
-  UNICODE_INSTANCE = unicode;
 }

@@ -1,36 +1,8 @@
-const path = require("path");
+const {webpackConfig, relDir} = require("./webpack.common");
 
 module.exports = {
-  entry: path.resolve(__dirname, "src/unicode.ts"),
-  output: {
-    path: path.resolve(__dirname, "dist"),
-    filename: "parsegraph-unicode.js",
-    globalObject: "this",
-    library: "parsegraph_unicode",
-    libraryTarget: "umd",
+  entry: {
+    index: relDir("src/index.ts"),
   },
-  module: {
-    rules: [
-      {
-        test: /\.(js|ts|tsx?)$/,
-        exclude: /node_modules/,
-        use: ['babel-loader', 'ts-loader']
-      },
-      {
-        test: /\.(glsl|vs|fs|vert|frag)$/,
-        exclude: /node_modules/,
-        use: ["ts-shader-loader"],
-      },
-      {
-        test: /\.(csv|txt)$/i,
-        use: 'raw-loader',
-      },
-    ],
-  },
-  resolve: {
-    extensions: [".js", ".ts", ".tsx", ".glsl"],
-    modules: [path.resolve(__dirname, "src"), "node_modules"],
-  },
-  mode: "development",
-  devtool: "eval-source-map",
+  ...webpackConfig(false),
 };
