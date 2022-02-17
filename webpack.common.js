@@ -5,9 +5,17 @@ const DIST_NAME = "unicode";
 
 const relDir = (...pathFrags)=>path.resolve(__dirname, ...pathFrags);
 
+const hasFiles = (extension)=>{
+  const rv = execSync(`find ${relDir("src")} -type f -name '*.${extension}'`);
+  return rv.toString() && rv.toString().length > 0;
+}
+
 const hasShaderFiles = ()=>{
-  const rv = execSync(`find ${relDir("src")} -type f -name '*.glsl'`);
-  return rv.stdout && rv.stdout.trim().length > 0;
+  return hasFiles("glsl");
+}
+
+const hasCSVFiles = ()=>{
+  return hasFiles("csv") || hasFiles("tsv") || hasFiles("txt");
 }
 
 const webpackConfig = (prod)=>{
@@ -35,6 +43,15 @@ const webpackConfig = (prod)=>{
       use: ["ts-shader-loader"],
     });
     extensions.push(".glsl");
+  }
+  if (hasCSVFiles()) {
+    rules.push({
+      test: /\.(csv|tsv|txt)$/i,
+      use: "raw-loader"
+    });
+    extensions.push(".tsv");
+    extensions.push(".txt");
+    extensions.push(".csv");
   }
 
   return {
