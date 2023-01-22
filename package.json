@@ -1,6 +1,6 @@
 {
   "name": "parsegraph-unicode",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "description": "unicode",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
